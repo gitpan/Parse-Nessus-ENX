@@ -1,0 +1,31 @@
+Parse::Nessus::ENX version 0.01
+===============================
+
+DESCRIPTION
+
+This module is designed to extract information from nessusWX export files.
+Certain functions have been designed to return certain sets of data,
+such as service banners and OS versions. Other functions have been
+provided that will return more specific information, such as all IPs
+listening on a given port or all IPs associated with a specified plugin
+id.
+
+To install:
+
+	% perl Makefile.PL
+	% make
+	% make test
+	% make install
+
+For documentation:
+
+	% perldoc Parse::Nessus::ENX
+
+If you find this module to be useful, please let me know. All comments
+and requests for additions are welcome.
+
+David J Kyger <dave@norootsquash.net>
+
+http://www.norootsquash.net
+
+
