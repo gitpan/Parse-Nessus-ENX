@@ -2,15 +2,15 @@
 package Parse::Nessus::ENX;
 
 use strict;
-use vars qw/ $VERSION @ISA @EXPORT_OK /;
+use vars qw/ $VERSION @ISA @EXPORT_OK %EXPORT_TAGS /;
 
 require Exporter;
 
 @ISA       = qw/ Exporter /;
 @EXPORT_OK =
-  qw/ ebanners eports eplugin ewebdirs enfs eos esnmp estatos estatservices/;
-
-$VERSION = '1.0';
+  qw/ ebanners eports eplugin ewebdirs enfs eos esnmp estatos estatservices estatvulns /;
+%EXPORT_TAGS = (all => [qw/ ebanners eports eplugin ewebdirs enfs eos esnmp estatos estatservices estatvulns /] );
+$VERSION = '1.1';
 
 use constant WEBDIR => 11032;  # nessus plugin id for web directories discovered
 use constant NFS    => 10437;  # nessus plugin id for nfs shares discovered
@@ -196,6 +196,39 @@ sub estatservices {
     return @graphservices;
 }
 
+sub estatvulns {
+    my (@edata) = @_;
+    my (@allvuln);
+    my $esevval = pop (@edata);
+    my $eseverity;
+    if ($esevval == 1) {
+	    $eseverity = "REPORT";
+    }
+    elsif ($esevval == 2) {
+	    $eseverity = "INFO";
+    }
+    elsif ($esevval == 3) {
+	    $eseverity = "NOTE";
+    }
+    foreach my $edata (@edata) {
+            my @result = split ( /\|/, $edata );
+	    if (! $result[3]) {
+		    next;
+	    }
+            elsif ( $result[3] =~ /$eseverity/ ) {
+                push @allvuln, $result[2];
+            }
+    }
+    my %count;
+    map { $count{$_}++ } @allvuln;
+    my @rearranged = sort { $count{$b} <=> $count{$a} } keys %count;
+    my @graphvuln;
+    foreach (@rearranged) {
+        push @graphvuln, join "|", $_, "$count{$_}\n";
+    }
+    return @graphvuln;
+}
+
 1;
 
 __END__
@@ -341,7 +374,7 @@ To query by plugin id
 
 To obtain a OS count, useful for graphing
 
-	my @countos = estatos(nessusdata);
+	my @countos = estatos(@nessusdata);
 	print @countos;
 
 	# returns
@@ -361,7 +394,7 @@ To obtain a OS count, useful for graphing
 
 To obtain a service count, useful for graphing
 
-	my @countservices = estatservices(nessusdata);
+	my @countservices = estatservices(@nessusdata);
 	print @countservices;
 
 	# returns
@@ -379,9 +412,35 @@ To obtain a service count, useful for graphing
 	ssh (22/tcp)|25
 	sun-answerbook (8888/tcp)|22
 
+To obtain a vulnerability count, useful for graphing
+
+	# note: options are as follows:
+	# 1 returns high severity vulnerabilties
+	# 2 returns medium severity vulnerabilities
+	# 3 returns low level security notes
+	
+	my @countvulns = estatvulns(@nessusdata,1);
+	print @countvulns;
+
+	#returns
+	plugin id|count
+
+	#example
+	11875|40
+	11412|17
+	10116|12
+	11856|11	
+	10932|10
+	10937|7
+	11793|6
+	
 =head1 AUTHOR
 
-David J Kyger, dave@norootsquash.net
+David J Kyger <dave@norootsquash.net>
+
+=head1 Thanks
+
+Gwendolynn ferch Elydyr <gwen@reptiles.org>
 
 =head1 COPYRIGHT
 

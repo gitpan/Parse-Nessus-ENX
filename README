@@ -1,4 +1,4 @@
-Parse::Nessus::ENX version 1.0
+Parse::Nessus::ENX version 1.1
 ===============================
 
 DESCRIPTION
@@ -136,7 +136,7 @@ To query by plugin id
 
 To obtain a OS count, useful for graphing
 
-        my @countos = estatos(nessusdata);
+        my @countos = estatos(@nessusdata);
         print @countos;
 
         # returns
@@ -156,7 +156,7 @@ To obtain a OS count, useful for graphing
 
 To obtain a service count, useful for graphing
 
-        my @countservices = estatservices(nessusdata);
+        my @countservices = estatservices(@nessusdata);
         print @countservices;
 
         # returns
@@ -174,12 +174,36 @@ To obtain a service count, useful for graphing
         ssh (22/tcp)|25
         sun-answerbook (8888/tcp)|22
 
+To obtain a vulnerability count, useful for graphing
+
+	# note: options are as follows:
+	# 1 returns high severity vulnerabilties
+	# 2 returns medium severity vulnerabilities
+	# 3 returns low level security notes
+	
+	my @countvulns = estatvulns(@nessusdata,1);
+	print @countvulns;
+
+	#returns
+	plugin id|count
+
+	#example
+	11875|40
+	11412|17
+	10116|12
+	11856|11	
+	10932|10
+	10937|7
+	11793|6
+
 For documentation:
 
 	% perldoc Parse::Nessus::ENX
 
 If you find this module to be useful, please let me know. All comments
 and requests for additions are welcome.
+
+thanks to Gwen <gwen@reptiles.org> for the %EXPORT_TAGS patch
 
 David J Kyger <dave@norootsquash.net>
 
