@@ -4,3 +4,6 @@ Revision history for Perl extension Parse::Nessus::ENX.
 	- original version; created by h2xs 1.22 with options
 		-X -n Parse::Nessus::ENX
 
+1.0  Thu Jan 22 18:38:46 2004
+	- Added two functions (estatos, estatservices)
+	- Updated POD
